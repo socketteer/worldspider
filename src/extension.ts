@@ -42,9 +42,17 @@ export function activate(context: vscode.ExtensionContext) {
 
 	async function handleGetModelCompletions() {
 		const { prefix } = getCurrentContext();
-		const responseTextArray = await getModelResponseText(prefix);
-		modelSuggestions = responseTextArray;
-		vscode.commands.executeCommand('editor.action.triggerSuggest');
+		vscode.window.withProgress({
+			location: vscode.ProgressLocation.Window,
+			cancellable: false,
+			title: 'Generating...'
+		}, async (progress) => {
+			progress.report({ increment: 0 });
+			const responseTextArray = await getModelResponseText(prefix);
+			progress.report({ increment: 100 });
+			modelSuggestions = responseTextArray;
+			vscode.commands.executeCommand('editor.action.triggerSuggest');	
+		});
 		// saveModelResponseText(responseTextArray[0]);
 		// console.log(modelSuggestions);
 	}
