@@ -27,8 +27,8 @@
     "keybindings": [
       {
         "command": "worldspider.showCompletions",
-        "key": "ctrl+shift+alt+c",
-        "mac": "cmd+shift+alt+c"
+        "key": "alt+s",
+        "mac": "alt+s"
       },
       {
         "command": "worldspider.getModelCompletions",

@@ -12,7 +12,7 @@ Install using the command `code --install-extension worldspider-0.0.1.vsix`.
 
 After installing, set `worldspider.apiKey` to your OpenAI API key.
 
-To generate completions from the caret, press `Alt+D`. You can change this keybinding in the keybindings editor.
+To generate completions from the caret, press `Alt+D`. You can change this keybinding in the keybindings editor. If you close the completions dropdown, you can reopen the same completion list with `Alt+S` as long as you haven't generated any new ones.
 
 ## Configuration
 

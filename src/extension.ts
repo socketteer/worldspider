@@ -22,10 +22,12 @@ export function activate(context: vscode.ExtensionContext) {
 		'*', 
 		{
 				provideCompletionItems(document, position, token, context) {
-						const completionItems = modelSuggestions.map((text) => {
+						const completionItems = modelSuggestions.map((text, i) => {
 								const completionItem = new vscode.CompletionItem(text);
 								completionItem.insertText = text;
 								completionItem.keepWhitespace = true;
+								// completionItem.commitCharacters = [i.toString()];
+								completionItem.documentation = text;
 								completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
 								return completionItem;
 						});
