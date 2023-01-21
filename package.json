@@ -16,10 +16,6 @@
   "contributes": {
     "commands": [
       {
-        "command": "worldspider.helloWorld",
-        "title": "Hello World!"
-      },
-      {
         "command": "worldspider.showCompletions",
         "title": "Show completions"
       },
@@ -29,11 +25,6 @@
       }
     ],
     "keybindings": [
-      {
-        "command": "worldspider.helloWorld",
-        "key": "ctrl+shift+alt+h",
-        "mac": "cmd+shift+alt+h"
-      },
       {
         "command": "worldspider.showCompletions",
         "key": "ctrl+shift+alt+c",
