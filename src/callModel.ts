@@ -12,25 +12,40 @@ export async function callModel(prompt: string) {
   const log = workbenchConfig.get('log');
   const apiKey = workbenchConfig.get('apiKey');
 
+  if(!apiKey) {
+    vscode.window.showErrorMessage("No API key set. Please set the 'worldspider.apiKey' setting.");
+    return;
+  }
+
   const configuration = new Configuration({
     apiKey: apiKey,
   });
   const openai = new OpenAIApi(configuration);
-  const response = await openai.createCompletion({
-    model: model,
-    prompt: prompt,
-    max_tokens: maxTokens,
-    n: numCompletions,
-    temperature: temperature,
-  });
-  if(log) {
-    saveModelResponse(response.data);
+
+  try {
+    const response = await openai.createCompletion({
+      model: model,
+      prompt: prompt,
+      max_tokens: maxTokens,
+      n: numCompletions,
+      temperature: temperature,
+    });
+    if(log) {
+      saveModelResponse(response.data);
+    }
+    return response;
+  } catch (error) {
+    console.log(error);
+    vscode.window.showErrorMessage("model call failed");
+    return;
   }
-  return response;
 }
 
 export async function getModelResponseText(prompt: string) {
   const response = await callModel(prompt);
+  if(!response) {
+    return [];
+  }
   const textOptions = response.data.choices.map((choice: { text: any; }) => choice.text);
   console.log(textOptions);
   return textOptions;
