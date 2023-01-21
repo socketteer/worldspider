@@ -14,6 +14,8 @@ After installing, set `worldspider.apiKey` to your OpenAI API key.
 
 To generate completions from the caret, press `Alt+D`. You can change this keybinding in the keybindings editor.
 
+## Configuration
+
 Currently, the following generation parameters are supported:
 - `worldspider.model`: Name of the model to use. `code-davinci-002` is the default.
 - `worldspider.numCompletions`: Number of completions to generate.
