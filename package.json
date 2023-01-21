@@ -1,0 +1,138 @@
+{
+  "name": "worldspider",
+  "displayName": "worldspider",
+  "description": "loom in vscode",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.74.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "*"
+  ],
+  "main": "./out/extension.js",
+  "contributes": {
+    "commands": [
+      {
+        "command": "worldspider.helloWorld",
+        "title": "Hello World!"
+      },
+      {
+        "command": "worldspider.showCompletions",
+        "title": "Show completions"
+      },
+      {
+        "command": "worldspider.getModelCompletions",
+        "title": "Call model"
+      }
+    ],
+    "keybindings": [
+      {
+        "command": "worldspider.helloWorld",
+        "key": "ctrl+shift+alt+h",
+        "mac": "cmd+shift+alt+h"
+      },
+      {
+        "command": "worldspider.showCompletions",
+        "key": "ctrl+shift+alt+c",
+        "mac": "cmd+shift+alt+c"
+      },
+      {
+        "command": "worldspider.getModelCompletions",
+        "key": "alt+d",
+        "mac": "alt+d"
+      }
+    ],
+    "configuration": {
+      "title": "worldspider",
+      "properties": {
+        "worldspider.apiKey": {
+          "type": "string",
+          "default": "",
+          "description": "OpenAI API key"
+        },
+        "worldspider.generation.model": {
+          "type": "string",
+          "default": "code-davinci-002",
+          "description": "OpenAI model"
+        },
+        "worldspider.generation.maxTokens": {
+          "type": "number",
+          "default": 64,
+          "description": "Maximum number of tokens to generate"
+        },
+        "worldspider.generation.numCompletions": {
+          "type": "number",
+          "default": 5,
+          "description": "Number of completions to generate"
+        },
+        "worldspider.generation.temperature": {
+          "type": "number",
+          "default": 1,
+          "description": "Temperature"
+        },
+        "worldspider.generation.prefixLength": {
+          "type": "number",
+          "default": 10000,
+          "description": "Maximum length of prompt prefix"
+        },
+        "worldspider.generation.topP": {
+          "type": "number",
+          "default": 1,
+          "description": "Top p"
+        },
+        "worldspider.generation.frequencyPenalty": {
+          "type": "number",
+          "default": 0,
+          "description": "Frequency penalty"
+        },
+        "worldspider.generation.presencePenalty": {
+          "type": "number",
+          "default": 0,
+          "description": "Presence penalty"
+        },
+        "worldspider.generation.stopSequences": {
+          "type": "array",
+          "default": [],
+          "description": "Stop sequences"
+        },
+        "worldspider.log": {
+          "type": "boolean",
+          "default": false,
+          "description": "Log model responses"
+        },
+        "worldspider.savePath": {
+          "type": "string",
+          "default": "history.json",
+          "description": "Path to save model response history"
+        }
+      }
+    }
+  },
+  "scripts": {
+    "vscode:prepublish": "npm run compile",
+    "compile": "tsc -p ./",
+    "watch": "tsc -watch -p ./",
+    "pretest": "npm run compile && npm run lint",
+    "lint": "eslint src --ext ts",
+    "test": "node ./out/test/runTest.js"
+  },
+  "devDependencies": {
+    "@types/glob": "^8.0.0",
+    "@types/mocha": "^10.0.1",
+    "@types/node": "16.x",
+    "@types/vscode": "^1.74.0",
+    "@typescript-eslint/eslint-plugin": "^5.45.0",
+    "@typescript-eslint/parser": "^5.45.0",
+    "@vscode/test-electron": "^2.2.0",
+    "eslint": "^8.28.0",
+    "glob": "^8.0.3",
+    "mocha": "^10.1.0",
+    "typescript": "^4.9.3"
+  },
+  "dependencies": {
+    "openai": "^3.1.0"
+  }
+}
