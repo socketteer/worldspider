@@ -16,11 +16,11 @@ export function saveModelResponse(modelResponse: any) {
     fs.writeFileSync(filePath, '[]');
   }
   fs.readFile(filePath, 'utf8', function (err: any, data: any) {
-    if (err) throw err;
+    if (err) {throw err;}
     var json = JSON.parse(data);
     json.push(modelResponse);
     fs.writeFile(filePath, JSON.stringify(json), function (err: any) {
-      if (err) throw err;
+      if (err) {throw err;}
       console.log('Saved to ' + filePath);
     });
   }

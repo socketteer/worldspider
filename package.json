@@ -22,6 +22,10 @@
       {
         "command": "worldspider.getModelCompletions",
         "title": "Call model"
+      },
+      {
+        "command": "worldspider.getModelInfillCompletions",
+        "title": "Call model with infill"
       }
     ],
     "keybindings": [
@@ -34,6 +38,11 @@
         "command": "worldspider.getModelCompletions",
         "key": "alt+d",
         "mac": "alt+d"
+      },
+      {
+        "command": "worldspider.getModelInfillCompletions",
+        "key": "alt+shift+d",
+        "mac": "alt+shift+d"
       }
     ],
     "configuration": {
@@ -68,6 +77,11 @@
           "type": "number",
           "default": 10000,
           "description": "Maximum length of prompt prefix"
+        },
+        "worldspider.generation.suffixLength": {
+          "type": "number",
+          "default": 5000,
+          "description": "Maximum length of prompt suffix"
         },
         "worldspider.generation.topP": {
           "type": "number",

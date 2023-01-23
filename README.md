@@ -18,6 +18,8 @@ Then use arrow keys to scroll through completions and hit enter to append one to
 
 If you close the dropdown, you can reopen the same completion list with `Alt+S` as long as you haven't generated any new ones.
 
+To generate infills, select the text you want to replace and press `Alt+Shift+D`.
+
 If you find the completion dropdown too small, you can change the size of the dropdown by setting `editor.suggestLineHeight` to larger number of lines, such as 32 (16 is default).
 
 If you have Copilot enabled at the same time as Worldspider, you will also get inline Copilot suggestions, which does not interfere with Worldspider but may be confusing.
@@ -29,6 +31,10 @@ Currently, the following generation parameters are supported:
 - `worldspider.generation.numCompletions`: Number of completions to generate.
 - `worldspider.generation.maxTokens`: Maximum number of tokens to generate.
 - `worldspider.generation.temperature`: Temperature of the model. Higher values will result in more random completions.
-- `worldspider.generation.prefixLength`: Maximum length of the prompt in characters.
+- `worldspider.generation.topP`: Percentage of the probability mass to sample from.
+- `worldspider.generation.frequencyPenalty`: Frequency penalty.
+- `worldspider.generation.presencePenalty`: Presence penalty.
+- `worldspider.generation.prefixLength`: Maximum length of the prefix prompt in characters.
+- `worldspider.generation.suffixLength`: Maximum length of the suffix prompt (for infills) in characters.
 
 If you set `worldspider.log` to `true`, the extension will save model responses to a path specified by `worldspider.savePath`.

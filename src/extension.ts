@@ -40,15 +40,15 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('editor.action.triggerSuggest');
 	});
 
-	async function handleGetModelCompletions() {
-		const { prefix } = getCurrentContext();
+	async function handleGetModelCompletions(infill: boolean = false) {
+		const { prefix, suffix } = getCurrentContext();
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
 			title: 'Generating...'
 		}, async (progress) => {
 			progress.report({ increment: 0 });
-			const responseTextArray = await getModelResponseText(prefix);
+			const responseTextArray = await getModelResponseText(prefix, suffix, infill);
 			progress.report({ increment: 100 });
 			modelSuggestions = responseTextArray;
 			vscode.commands.executeCommand('editor.action.triggerSuggest');	
@@ -58,7 +58,11 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	let getModelCompletions = vscode.commands.registerCommand('worldspider.getModelCompletions', () => {
-		handleGetModelCompletions();
+		handleGetModelCompletions(false);
+	});
+
+	let getModelInfillCompletions = vscode.commands.registerCommand('worldspider.getModelInfillCompletions', () => {
+		handleGetModelCompletions(true);
 	});
 
 	context.subscriptions.push(registerCompletionItemsProvider);
