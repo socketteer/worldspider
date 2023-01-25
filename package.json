@@ -6,6 +6,7 @@
   "engines": {
     "vscode": "^1.74.0"
   },
+  "publisher": "janus",
   "categories": [
     "Other"
   ],
@@ -30,6 +31,14 @@
       {
         "command": "worldspider.copyCompletionsToClipboard",
         "title": "Copy completions to clipboard"
+      },
+      {
+        "command": "worldspider.prevCompletions",
+        "title": "Show previous completions"
+      },
+      {
+        "command": "worldspider.nextCompletions",
+        "title": "Show next completions"
       }
     ],
     "keybindings": [
@@ -52,6 +61,16 @@
         "command": "worldspider.copyCompletionsToClipboard",
         "key": "alt+c",
         "mac": "alt+c"
+      },
+      {
+        "command": "worldspider.prevCompletions",
+        "key": "alt+left",
+        "mac": "alt+left"
+      },
+      {
+        "command": "worldspider.nextCompletions",
+        "key": "alt+right",
+        "mac": "alt+right"
       }
     ],
     "configuration": {

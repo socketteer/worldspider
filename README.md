@@ -20,11 +20,7 @@ Use arrow keys to scroll through completions and hit enter to append one to the 
 
 If you close the dropdown, you can reopen the same completion list with `Alt+S` as long as you haven't generated any new ones.
 
-### Customizations
-
-If you find the completion dropdown too small, you can change the size of the dropdown by setting `editor.suggestLineHeight` to larger number of lines, such as 32 (16 is default).
-
-If you have Copilot enabled at the same time as Worldspider, you will also get inline Copilot suggestions, which does not interfere with Worldspider but may be confusing.
+To show the previous batch of completions, press `Alt+Left`. To show the next batch of completions, press `Alt+Right`.
 
 ## Commands
 
@@ -32,6 +28,8 @@ If you have Copilot enabled at the same time as Worldspider, you will also get i
 - `worldspider.getModelInfillCompletions`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
 - `worldspider.showCompletions`: Show the completion dropdown. Default keybinding is `Alt+S`.
 - `worldspider.copyCompletionsToClipboard`: Copy completions list to the clipboard. Completions will be separated by `|`. Default keybinding is `Alt+C`.
+- `worldspider.prevCompletions`: Show the previous batch of completions. Default keybinding is `Alt+Left`.
+- `worldspider.nextCompletions`: Show the next batch of completions. Default keybinding is `Alt+Right`.
 
 You can change any of these keybindings by going to `File > Preferences > Keyboard Shortcuts` and searching for `worldspider`.
 
@@ -52,3 +50,9 @@ Other settings:
 - `worldspider.apiKey`: Your OpenAI API key.
 - `worldspider.log`: Whether to log model responses to a file.
 - `worldspider.savePath`: Path to save model responses to.
+
+## Customizations
+
+If you find the completion dropdown too small, you can change the size of the dropdown by setting `editor.suggestLineHeight` to larger number of lines, such as 32 (16 is default).
+
+If you have Copilot enabled at the same time as Worldspider, you will also get inline Copilot suggestions, which does not interfere with Worldspider's functionality but may be confusing.

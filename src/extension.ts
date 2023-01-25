@@ -16,23 +16,37 @@ export function activate(context: vscode.ExtensionContext) {
 	console.log('Congratulations, your extension "worldspider" is now active!');
 
 	let modelSuggestions: any[] = [];
+	let history: any[] = [];
+	let currentHistoryIndex = 0;
 
 	let registerCompletionItemsProvider = vscode.languages.registerCompletionItemProvider(
 		'*', 
 		{
-				provideCompletionItems(document, position, token, context) {
-						const completionItems = modelSuggestions.map((text, i) => {
-								const completionItem = new vscode.CompletionItem(text);
-								completionItem.insertText = text;
-								completionItem.keepWhitespace = true;
-								completionItem.documentation = text;
-								completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
-								return completionItem;
-						});
-						return completionItems;
-				}
+			provideCompletionItems(document, position, token, context) {
+				const completionItems = modelSuggestions.map((text, i) => {
+					const completionItem = new vscode.CompletionItem(text);
+					completionItem.insertText = text;
+					completionItem.keepWhitespace = true;
+					completionItem.documentation = text;
+					completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
+					return completionItem;
+				});
+				return completionItems;
+			}
 		}
 	);//, ...triggers);
+
+	// let registerHoverProvider = vscode.languages.registerHoverProvider(
+	// 	'*',
+	// 	{
+	// 		provideHover(document, position, token) {
+	// 			const range = document.getWordRangeAtPosition(position);
+	// 			const word = document.getText(range);
+	// 			return new vscode.Hover(`**${word}**`);
+	// 		}
+	// 	}
+	// );
+
 
 	let showCompletions = vscode.commands.registerCommand('worldspider.showCompletions', () => {
 			vscode.commands.executeCommand('editor.action.triggerSuggest');
@@ -49,6 +63,14 @@ export function activate(context: vscode.ExtensionContext) {
 			const responseTextArray = await getModelResponseText(prefix, suffix, infill);
 			progress.report({ increment: 100 });
 			modelSuggestions = responseTextArray;
+			// append to history
+			history.push({
+				prefix,
+				suffix,
+				infill,
+				responses: responseTextArray
+			});
+			currentHistoryIndex = history.length - 1;
 			vscode.commands.executeCommand('editor.action.triggerSuggest');	
 		});
 	}
@@ -66,11 +88,30 @@ export function activate(context: vscode.ExtensionContext) {
 		vscode.window.showInformationMessage('Copied completions to clipboard');
 	});
 
+	let prevCompletions = vscode.commands.registerCommand('worldspider.prevCompletions', () => {
+		if (currentHistoryIndex > 0) {
+			currentHistoryIndex--;
+			modelSuggestions = history[currentHistoryIndex].responses;
+			vscode.commands.executeCommand('editor.action.triggerSuggest');
+		}
+	});
+
+	let nextCompletions = vscode.commands.registerCommand('worldspider.nextCompletions', () => {
+		if (currentHistoryIndex < history.length - 1) {
+			currentHistoryIndex++;
+			modelSuggestions = history[currentHistoryIndex].responses;
+			vscode.commands.executeCommand('editor.action.triggerSuggest');
+		}
+	});
+
+
 	context.subscriptions.push(registerCompletionItemsProvider);
 	context.subscriptions.push(showCompletions);
 	context.subscriptions.push(getModelCompletions);
 	context.subscriptions.push(getModelInfillCompletions);
 	context.subscriptions.push(copyCompletionsToClipboard);
+	context.subscriptions.push(prevCompletions);
+	context.subscriptions.push(nextCompletions);
 
 }
 
