@@ -14,13 +14,11 @@ After installing, set `worldspider.apiKey` to your OpenAI API key.
 
 ### Generating text
 
-To generate completions from the caret, press `Alt+D` (You can change this keybinding in the keybindings editor by changing the command `worldspider.getModelCompletions`).
+To generate completions from the caret, press `Alt+D` (You can change this keybinding in the keybindings editor by changing the command `worldspider.getModelCompletions`). To generate infills, select the text you want to replace and press `Alt+Shift+D`.
 
-Then use arrow keys to scroll through completions and hit enter to append one to the prompt, or click a completion to append it. 
+Use arrow keys to scroll through completions and hit enter to append one to the prompt, or click a completion to append it. 
 
 If you close the dropdown, you can reopen the same completion list with `Alt+S` as long as you haven't generated any new ones.
-
-To generate infills, select the text you want to replace and press `Alt+Shift+D`.
 
 ### Customizations
 
@@ -33,6 +31,7 @@ If you have Copilot enabled at the same time as Worldspider, you will also get i
 - `worldspider.getModelCompletions`: Generate completions from the caret. Default keybinding is `Alt+D`.
 - `worldspider.getModelInfillCompletions`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
 - `worldspider.showCompletions`: Show the completion dropdown. Default keybinding is `Alt+S`.
+- `worldspider.copyCompletionsToClipboard`: Copy completions list to the clipboard. Completions will be separated by `|`. Default keybinding is `Alt+C`.
 
 ## Settings
 

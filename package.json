@@ -26,6 +26,10 @@
       {
         "command": "worldspider.getModelInfillCompletions",
         "title": "Call model with infill"
+      },
+      {
+        "command": "worldspider.copyCompletionsToClipboard",
+        "title": "Copy completions to clipboard"
       }
     ],
     "keybindings": [
@@ -43,6 +47,11 @@
         "command": "worldspider.getModelInfillCompletions",
         "key": "alt+shift+d",
         "mac": "alt+shift+d"
+      },
+      {
+        "command": "worldspider.copyCompletionsToClipboard",
+        "key": "alt+c",
+        "mac": "alt+c"
       }
     ],
     "configuration": {

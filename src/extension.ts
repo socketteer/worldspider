@@ -61,10 +61,16 @@ export function activate(context: vscode.ExtensionContext) {
 		handleGetModelCompletions(true);
 	});
 
+	let copyCompletionsToClipboard = vscode.commands.registerCommand('worldspider.copyCompletionsToClipboard', () => {
+		vscode.env.clipboard.writeText(modelSuggestions.join('|'));
+		vscode.window.showInformationMessage('Copied completions to clipboard');
+	});
+
 	context.subscriptions.push(registerCompletionItemsProvider);
 	context.subscriptions.push(showCompletions);
 	context.subscriptions.push(getModelCompletions);
 	context.subscriptions.push(getModelInfillCompletions);
+	context.subscriptions.push(copyCompletionsToClipboard);
 
 }
 
