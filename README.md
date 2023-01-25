@@ -34,9 +34,9 @@ If you have Copilot enabled at the same time as Worldspider, you will also get i
 - `worldspider.getModelInfillCompletions`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
 - `worldspider.showCompletions`: Show the completion dropdown. Default keybinding is `Alt+S`.
 
-## Configuration
+## Settings
 
-Currently, the following generation parameters are supported:
+Generation settings:
 - `worldspider.generation.model`: Name of the model to use. `code-davinci-002` is the default.
 - `worldspider.generation.numCompletions`: Number of completions to generate.
 - `worldspider.generation.maxTokens`: Maximum number of tokens to generate.
@@ -47,4 +47,7 @@ Currently, the following generation parameters are supported:
 - `worldspider.generation.prefixLength`: Maximum length of the prefix prompt in characters.
 - `worldspider.generation.suffixLength`: Maximum length of the suffix prompt (for infills) in characters.
 
-If you set `worldspider.log` to `true`, the extension will save model responses to a path specified by `worldspider.savePath`.
+Other settings:
+- `worldspider.apiKey`: Your OpenAI API key.
+- `worldspider.log`: Whether to log model responses to a file.
+- `worldspider.savePath`: Path to save model responses to.
