@@ -8,9 +8,11 @@ You will need an OpenAI API key.
 
 ## Instructions
 
-Install using the command `code --install-extension worldspider-0.0.1.vsix`.
+Install using the command `code --install-extension worldspider-0.0.2.vsix`.
 
 After installing, set `worldspider.apiKey` to your OpenAI API key.
+
+### Generating text
 
 To generate completions from the caret, press `Alt+D` (You can change this keybinding in the keybindings editor by changing the command `worldspider.getModelCompletions`).
 
@@ -20,9 +22,17 @@ If you close the dropdown, you can reopen the same completion list with `Alt+S` 
 
 To generate infills, select the text you want to replace and press `Alt+Shift+D`.
 
+### Customizations
+
 If you find the completion dropdown too small, you can change the size of the dropdown by setting `editor.suggestLineHeight` to larger number of lines, such as 32 (16 is default).
 
 If you have Copilot enabled at the same time as Worldspider, you will also get inline Copilot suggestions, which does not interfere with Worldspider but may be confusing.
+
+## Commands
+
+- `worldspider.getModelCompletions`: Generate completions from the caret. Default keybinding is `Alt+D`.
+- `worldspider.getModelInfillCompletions`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
+- `worldspider.showCompletions`: Show the completion dropdown. Default keybinding is `Alt+S`.
 
 ## Configuration
 

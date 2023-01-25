@@ -4,7 +4,6 @@ import * as vscode from 'vscode';
 
 import { getModelResponseText } from './callModel';
 import { getCurrentContext } from './document';
-import { saveModelResponse } from './logging';
 
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
@@ -26,7 +25,6 @@ export function activate(context: vscode.ExtensionContext) {
 								const completionItem = new vscode.CompletionItem(text);
 								completionItem.insertText = text;
 								completionItem.keepWhitespace = true;
-								// completionItem.commitCharacters = [i.toString()];
 								completionItem.documentation = text;
 								completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
 								return completionItem;
@@ -53,8 +51,6 @@ export function activate(context: vscode.ExtensionContext) {
 			modelSuggestions = responseTextArray;
 			vscode.commands.executeCommand('editor.action.triggerSuggest');	
 		});
-		// saveModelResponseText(responseTextArray[0]);
-		// console.log(modelSuggestions);
 	}
 
 	let getModelCompletions = vscode.commands.registerCommand('worldspider.getModelCompletions', () => {
@@ -68,6 +64,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(registerCompletionItemsProvider);
 	context.subscriptions.push(showCompletions);
 	context.subscriptions.push(getModelCompletions);
+	context.subscriptions.push(getModelInfillCompletions);
 
 }
 

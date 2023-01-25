@@ -103,6 +103,11 @@
           "default": [],
           "description": "Stop sequences"
         },
+        "worldspider.filterDuplicates": {
+          "type": "boolean",
+          "default": true,
+          "description": "Don't show duplicate completions"
+        },
         "worldspider.log": {
           "type": "boolean",
           "default": false,

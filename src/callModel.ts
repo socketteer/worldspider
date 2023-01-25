@@ -15,9 +15,6 @@ export async function callModel(prompt: string, suffix: string, infill: boolean)
   const log = workbenchConfig.get('log');
   const apiKey = workbenchConfig.get('apiKey');
 
-  // console.log('prompt: ' + prompt);
-  // console.log('suffix: ' + suffix);
-
   if(!apiKey) {
     vscode.window.showErrorMessage("No API key set. Please set the 'worldspider.apiKey' setting.");
     return;
@@ -57,6 +54,6 @@ export async function getModelResponseText(prompt: string, suffix: string, infil
     return [];
   }
   const textOptions = response.data.choices.map((choice: { text: any; }) => choice.text);
-  console.log(textOptions);
+  // console.log(textOptions);
   return textOptions;
 }
