@@ -6,8 +6,8 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 ## [0.0.3] - 2023-01-25
 
--   Added `worldspider.copyCompletions` command to copy model response info to the clipboard.
--   Added `worldspider.copyCompletionsText` command to save model response info to a file.
+-   Added `worldspider.copyCompletions` command to copy model response to the clipboard.
+-   Added `worldspider.copyCompletionsText` command to copy model response text to the clipboard.
 -   Added `worldspider.prevCompletions` command to show the previous batch of completions.
 -   Added `worldspider.nextCompletions` command to show the next batch of completions.
 -   Added `worldspider.scorePrompt` command to score prompt logprobs without generating completions.
