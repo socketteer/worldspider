@@ -21,7 +21,7 @@ export function saveModelResponse(modelResponse: any) {
     json.push(modelResponse);
     fs.writeFile(filePath, JSON.stringify(json), function (err: any) {
       if (err) {throw err;}
-      console.log('Saved to ' + filePath);
+      // console.log('Saved to ' + filePath);
     });
   }
   );

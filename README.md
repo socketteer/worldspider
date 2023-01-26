@@ -22,14 +22,20 @@ If you close the dropdown, you can reopen the same completion list with `Alt+S` 
 
 To show the previous batch of completions, press `Alt+Left`. To show the next batch of completions, press `Alt+Right`.
 
+### Token logprobs
+
+To view token logprobs, hover over model-generated text. If `worldspider.generation.echo` is set to `true`, you can also hover over the prompt to view token logprobs. You can also highlight text and press `Alt+P` to view token logprobs without generating completions.
+
 ## Commands
 
-- `worldspider.getModelCompletions`: Generate completions from the caret. Default keybinding is `Alt+D`.
-- `worldspider.getModelInfillCompletions`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
+- `worldspider.getContinuations`: Generate completions from the caret. Default keybinding is `Alt+D`.
+- `worldspider.getInfills`: Generate infills from the selected text. Default keybinding is `Alt+Shift+D`.
+- `worldspider.scorePrompt`: Get logprobs of selected text without generating completions. Default keybinding is `Alt+P`.
 - `worldspider.showCompletions`: Show the completion dropdown. Default keybinding is `Alt+S`.
-- `worldspider.copyCompletionsToClipboard`: Copy completions list to the clipboard. Completions will be separated by `|`. Default keybinding is `Alt+C`.
 - `worldspider.prevCompletions`: Show the previous batch of completions. Default keybinding is `Alt+Left`.
 - `worldspider.nextCompletions`: Show the next batch of completions. Default keybinding is `Alt+Right`.
+- `worldspider.copyCompletions`: Copy model response info to the clipboard. Default keybinding is `Alt+C`.
+- `worldspider.copyCompletionsText`: Save model response info to a file. Default keybinding is `Alt+Shift+C`.
 
 You can change any of these keybindings by going to `File > Preferences > Keyboard Shortcuts` and searching for `worldspider`.
 
@@ -43,6 +49,8 @@ Generation settings:
 - `worldspider.generation.topP`: Percentage of the probability mass to sample from.
 - `worldspider.generation.frequencyPenalty`: Frequency penalty.
 - `worldspider.generation.presencePenalty`: Presence penalty.
+- `worldspider.generation.logprobs`: Number of counterfactual logprobs to return per token.
+- `worldspider.generation.echo`: Whether to return the prompt logprobs.
 - `worldspider.generation.prefixLength`: Maximum length of the prefix prompt in characters.
 - `worldspider.generation.suffixLength`: Maximum length of the suffix prompt (for infills) in characters.
 

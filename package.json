@@ -2,7 +2,7 @@
   "name": "worldspider",
   "displayName": "worldspider",
   "description": "loom in vscode",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -21,16 +21,24 @@
         "title": "Show completions"
       },
       {
-        "command": "worldspider.getModelCompletions",
+        "command": "worldspider.getContinuations",
         "title": "Call model"
       },
       {
-        "command": "worldspider.getModelInfillCompletions",
+        "command": "worldspider.getInfills",
         "title": "Call model with infill"
       },
       {
-        "command": "worldspider.copyCompletionsToClipboard",
+        "command": "worldspider.scorePrompt",
+        "title": "Get prompt logprobs without generating completions"
+      },
+      {
+        "command": "worldspider.copyCompletions",
         "title": "Copy completions to clipboard"
+      },
+      {
+        "command": "worldspider.copyCompletionsText",
+        "title": "Copy completions text to clipboard"
       },
       {
         "command": "worldspider.prevCompletions",
@@ -48,19 +56,29 @@
         "mac": "alt+s"
       },
       {
-        "command": "worldspider.getModelCompletions",
+        "command": "worldspider.getContinuations",
         "key": "alt+d",
         "mac": "alt+d"
       },
       {
-        "command": "worldspider.getModelInfillCompletions",
+        "command": "worldspider.scorePrompt",
+        "key": "alt+p",
+        "mac": "alt+p"
+      },
+      {
+        "command": "worldspider.getInfills",
         "key": "alt+shift+d",
         "mac": "alt+shift+d"
       },
       {
-        "command": "worldspider.copyCompletionsToClipboard",
+        "command": "worldspider.copyCompletions",
         "key": "alt+c",
         "mac": "alt+c"
+      },
+      {
+        "command": "worldspider.copyCompletionsText",
+        "key": "alt+shift+c",
+        "mac": "alt+shift+c"
       },
       {
         "command": "worldspider.prevCompletions",
@@ -130,6 +148,16 @@
           "type": "array",
           "default": [],
           "description": "Stop sequences"
+        },
+        "worldspider.generation.logprobs": {
+          "type": "number",
+          "default": 0,
+          "description": "Number of counterfactual top logprobs per token to return"
+        },
+        "worldspider.generation.echo": {
+          "type": "boolean",
+          "default": false,
+          "description": "Model returns prompt logprobs"
         },
         "worldspider.filterDuplicates": {
           "type": "boolean",
