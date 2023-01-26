@@ -6,13 +6,6 @@ import { getModelResponse, ModelResponse, ModelCompletion, LogprobsObject } from
 import { getCurrentContext, getSelectionInfo } from './document';
 // import { probToColor } from './utils';
 
-// interface HistoryItem {
-// 	prefix: string;
-// 	suffix: string;
-// 	infill: boolean;
-// 	response: ModelResponse;
-// }
-
 interface InsertedHistoryItem {
 	startPosition: number;
 	endPosition: number;

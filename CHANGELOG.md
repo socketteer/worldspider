@@ -13,7 +13,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 -   Added `worldspider.scorePrompt` command to score prompt logprobs without generating completions.
 -   Added `worldspider.generation.logprobs` setting to retrieve log probabilities.
 -   Added `worldspider.generation.echo` setting to control whether prompt logprobs are returned by the model.
--   Hovering over a completion now shows token probabilities.
+-   Hovering over text now shows token probabilities if the information is available.
 -   Model responses are logged to `worldspider` output channel.
 
 ## [0.0.2] - 2023-01-23
