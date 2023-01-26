@@ -122,9 +122,42 @@ export function activate(context: vscode.ExtensionContext) {
 				// const color = probToColor(hoverTokenProb);
 
 				// const markDownString = new vscode.MarkdownString(`<strong>${hoverToken}</strong>: <span style="color: ${color};">${hoverTokenLogprob.toPrecision(4)}</span> | ${hoverTokenProb.toPrecision(4)}%`);
-				const markDownString = new vscode.MarkdownString(`<strong>${hoverToken}</strong>: ${hoverTokenLogprob.toPrecision(4)} | ${hoverTokenProb.toPrecision(4)}%`);
+				// const markDownString = new vscode.MarkdownString(`<strong>'${hoverToken}'</strong>: ${hoverTokenLogprob.toPrecision(4)} | ${hoverTokenProb.toPrecision(4)}%`);
+				const markDownString = new vscode.MarkdownString();
 				markDownString.isTrusted = true;
 				markDownString.supportHtml = true;
+
+
+				if(hoverTokenAlternatives) {
+					// append markdown table header
+					markDownString.appendMarkdown(`\n\n| Token | Logprob | Prob`);
+					markDownString.appendMarkdown(`\n| --- | --- | --- |`);	
+
+					const sortedTokenAlternatives = [];
+
+					for (const key in hoverTokenAlternatives) {
+						sortedTokenAlternatives.push([key, hoverTokenAlternatives[key]]);
+					}
+
+					sortedTokenAlternatives.sort((a, b) => {
+						return b[1] - a[1];
+					});
+
+					sortedTokenAlternatives.forEach((tokenAlternative: any) => {
+						const token = tokenAlternative[0];
+						const logprob = tokenAlternative[1];
+						const prob = Math.exp(logprob) * 100;
+						// append row of markdown table
+						markDownString.appendMarkdown(`\n| '${token}' | ${logprob.toPrecision(4)} | ${prob.toPrecision(4)}% |`);
+						// markDownString.appendMarkdown(`<div><strong>'${token}'</strong>: <span style="text-align: right;">${logprob.toPrecision(4)} | ${prob.toPrecision(4)}%</span></div>`);
+					});
+				}
+
+				markDownString.appendMarkdown(`\n\n| Sampled | Logprob | Prob`);
+				markDownString.appendMarkdown(`\n| --- | --- | --- |`);
+				
+				markDownString.appendMarkdown(`\n| '${hoverToken}' | ${hoverTokenLogprob.toPrecision(4)} | ${hoverTokenProb.toPrecision(4)}% |`);
+				
 				return new vscode.Hover(markDownString);
 			}
 		}
@@ -174,6 +207,7 @@ export function activate(context: vscode.ExtensionContext) {
 				progress.report({ increment: 0 });
 				const modelResponse = await getModelResponse(selectedText, '', false, true);
 				progress.report({ increment: 100 });
+				vscode.window.showInformationMessage(`Added prompt logprob information`);
 				if(modelResponse) {
 					wsconsole.appendLine(JSON.stringify(modelResponse));
 					insertedHistory.push({

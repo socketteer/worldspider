@@ -4,7 +4,15 @@ All notable changes to the "worldspider" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [Unreleased]
+
+### Added
+
+-   Token hover shows counterfactual logprobs if available.
+
 ## [0.0.3] - 2023-01-25
+
+### Added
 
 -   Added `worldspider.copyCompletions` command to copy model response to the clipboard.
 -   Added `worldspider.copyCompletionsText` command to copy model response text to the clipboard.
