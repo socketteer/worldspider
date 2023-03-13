@@ -176,7 +176,19 @@
           "description": "Path to save model response history"
         }
       }
-    }
+    },
+    "languages": [{
+      "id": "worldspider",
+      "extensions": [".wspdr"],
+      "configuration": "./language-configuration.json"
+    }],
+    "grammars": [
+      {
+        "language": "worldspider",
+        "scopeName": "source.worldspider",
+        "path": "./syntaxes/worldspider.tmLanguage.json"
+      }
+    ]
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",

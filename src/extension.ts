@@ -15,6 +15,26 @@ interface InsertedHistoryItem {
 }
 
 
+export function removeMetaTokensFromPrompt(prompt: string): string {
+	// Strip comments, i.e. the tokens and everything between them
+	// Also strip a trailing newline after the comment,
+	// so a commented line doesn't leave an extra newline in the prompt 
+	prompt = prompt.replace(/<\|BEGINCOMMENT\|>.*?<\|ENDCOMMENT\|>\n?/g, "");
+	
+	// Strip everything before the <|start|> token.
+	// If there is a newline directly after the start token, also strip it
+	prompt = prompt.replace(/^.*<\|start\|>\n?/, "");
+
+	// Strip everything after the <|end|> token
+	prompt = prompt.replace(/<\|end\|>.*$/, "");
+
+	// Strip any other kind of token
+	prompt = prompt.replace(/<\|.*?\|>/g, "");
+
+	return prompt;
+  }
+
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -169,7 +189,11 @@ export function activate(context: vscode.ExtensionContext) {
 	});
 
 	async function handleGetModelCompletions(infill: boolean = false) {
-		const { prefix, suffix } = getCurrentContext();
+		let { prefix, suffix } = getCurrentContext();
+		// Strip comments and other special tokens from prompt
+		prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
+
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,

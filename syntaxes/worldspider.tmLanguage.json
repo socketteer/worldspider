@@ -1,0 +1,21 @@
+{
+    "scopeName": "source.worldspider",
+    "patterns": [{ "include": "#expression" }],
+    "repository": {
+      "expression": {
+        "patterns": [
+          { "include": "#blockcomment" },
+          { "include": "#token" }
+        ]
+      },
+      "blockcomment": {
+        "begin": "<\\|BEGINCOMMENT\\|>",
+        "end": "<\\|ENDCOMMENT\\|>",
+        "name": "comment.block"
+      },
+      "token": {
+        "match": "<\\|\\w+\\|>",
+        "name": "keyword.control"
+      }
+    }
+  }
