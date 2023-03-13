@@ -92,9 +92,10 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
       saveModelResponse(responseObject);
     }
     return responseObject;
-  } catch (error) {
+  } catch (error: unknown) {
     console.log(error);
-    vscode.window.showErrorMessage("model call failed");
+    let errorMessage = (error as Error).message;
+    vscode.window.showErrorMessage(`model call failed: ${errorMessage}`);
     return null;
   }
 }
