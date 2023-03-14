@@ -8,7 +8,7 @@ You will need an OpenAI API key.
 
 ## Instructions
 
-Install using the command `code --install-extension worldspider-0.0.2.vsix`.
+Install using the command `code --install-extension worldspider-0.0.3.1.vsix`.
 
 After installing, set `worldspider.apiKey` to your OpenAI API key.
 

@@ -4,6 +4,7 @@ import * as vscode from 'vscode';
 
 import { getModelResponse, ModelResponse, ModelCompletion, LogprobsObject } from './callModel';
 import { getCurrentContext, getSelectionInfo } from './document';
+import { Tree, TreeNode, WSTreeItem, getAncestry, getAncestryTextArray, getAncestryTextOffsets, createNode, NodeProvider } from './tree';
 // import { probToColor } from './utils';
 
 interface InsertedHistoryItem {
@@ -12,6 +13,7 @@ interface InsertedHistoryItem {
 	prefix: string;
 	echo: boolean;
 	modelCompletion: ModelCompletion;
+	decoration: vscode.TextEditorDecorationType | undefined;
 }
 
 
@@ -30,17 +32,101 @@ export function activate(context: vscode.ExtensionContext) {
 	let history: ModelResponse[] = [];
 	let currentHistoryIndex = 0;
 	let insertedHistory: InsertedHistoryItem[] = [];
+	// let tree = {
+	// 	"root": {
+	// 		"text": vscode.window.activeTextEditor?.document.getText(),
+	// 		"childrenIds": [],
+	// 		"parentId": null,
+	// 	}
+	// };
+	let tree: Tree = {
+		"root": {
+			"text": vscode.window.activeTextEditor?.document.getText() || "",
+			"childrenIds": ["child1"],
+			"parentId": null,
+		},
+		"child1": {
+			"text": "child1 text",
+			"childrenIds": [],
+			"parentId": "root",
+		}
+	};
+
+	let activeNodeId = "root";
+
+	const nodeProvider = new NodeProvider(tree);
+
+	vscode.window.registerTreeDataProvider('worldtree', nodeProvider);
+	const treeView = vscode.window.createTreeView('worldtree', { treeDataProvider: nodeProvider });
+	// vscode.commands.registerCommand('worldtree.refresh', () => NodeProvider.refresh());
+	vscode.commands.registerCommand('worldtree.createChild', (treeItem: WSTreeItem) => {
+		console.log(treeItem.id);
+		const text = "new node";
+		createNode(treeItem.id, text, tree);
+		vscode.window.showInformationMessage(`Created child node ${text} for node ${treeItem.id}`);
+		// const newId = createNode(nodeId, text, tree);
+		nodeProvider.refresh();
+		// wait for tree to update
+		setTimeout(() => {
+			treeView.reveal(nodeProvider.getTreeItemById(treeItem.id), {select: true, focus: true, expand: true});
+		}, 1000);
+	});
+
+	// listen to document changes
+	vscode.workspace.onDidChangeTextDocument((event) => {
+		console.log('onDidChangeTextDocument', event);
+		// update tree with new text
+		if(event.contentChanges.length > 0) {
+
+		}
+	});
+
+	// colors text in the editor in a range
+	function colorText(startPosition: number, endPosition: number, color: string) {
+		if(!vscode.window.activeTextEditor || !startPosition || !endPosition) {
+			return;
+		}
+		const decorationType = vscode.window.createTextEditorDecorationType({
+			backgroundColor: color,
+			// isWholeLine: true,
+			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed
+		});
+		const range = new vscode.Range(vscode.window.activeTextEditor.document.positionAt(startPosition), vscode.window.activeTextEditor?.document.positionAt(endPosition));
+		
+		vscode.window.activeTextEditor.setDecorations(decorationType, [range]);
+
+		return decorationType;
+	}
+
+	
 
 	function afterInsertText(position: number, completionIndex: number, text: string) {
 		const prompt = history[currentHistoryIndex].prompt;
+		const startPosition = history[currentHistoryIndex].echo ? position - prompt.length : position;
+		const endPosition = position + text.length;
+		const decoration = colorText(startPosition, endPosition, 'rgba(0, 0, 0, 0.3)');
 		insertedHistory.push({
-			startPosition: history[currentHistoryIndex].echo ? position - prompt.length : position,
-			endPosition: position + text.length,
+			startPosition: startPosition,
+			endPosition: endPosition,
 			prefix: prompt,
 			echo: history[currentHistoryIndex].echo,
 			modelCompletion: history[currentHistoryIndex].choices[completionIndex],
+			decoration: decoration,
 		});
 	}
+
+	function removeTextDecoration(decoration: vscode.TextEditorDecorationType | undefined) {
+		if(decoration) {
+			decoration.dispose();
+		}
+	}
+
+	// function getDecorationText(decoration: vscode.TextEditorDecorationType | undefined) {
+	// 	if(!decoration) {
+	// 		return '';
+	// 	}
+	// 	const decorations = vscode.window.activeTextEditor
+	// }
 
 	let afterInsertTextDisposable = vscode.commands.registerCommand('worldspider.afterInsertText', afterInsertText);
 
@@ -49,7 +135,7 @@ export function activate(context: vscode.ExtensionContext) {
 		{
 			provideCompletionItems(document, position, token, context) {
 				// console.log(history[currentHistoryIndex]);
-				const completionItems = history[currentHistoryIndex].choices.map((response: { text: string; }, i: any) => {
+				const completionItems = history[currentHistoryIndex].choices.map((response: ModelCompletion) => {
 					const text = response.text;
 					const completionItem = new vscode.CompletionItem(text);
 					completionItem.insertText = text;
@@ -62,7 +148,7 @@ export function activate(context: vscode.ExtensionContext) {
 					completionItem.command = {
 						command: 'worldspider.afterInsertText',
 						title: 'afterInsertText',
-						arguments: [absolutePosition, i, text]
+						arguments: [absolutePosition, response.index, text]
 					};
 
 					return completionItem;
@@ -149,7 +235,6 @@ export function activate(context: vscode.ExtensionContext) {
 						const prob = Math.exp(logprob) * 100;
 						// append row of markdown table
 						markDownString.appendMarkdown(`\n| '${token}' | ${logprob.toPrecision(4)} | ${prob.toPrecision(4)}% |`);
-						// markDownString.appendMarkdown(`<div><strong>'${token}'</strong>: <span style="text-align: right;">${logprob.toPrecision(4)} | ${prob.toPrecision(4)}%</span></div>`);
 					});
 				}
 
@@ -210,12 +295,14 @@ export function activate(context: vscode.ExtensionContext) {
 				vscode.window.showInformationMessage(`Added prompt logprob information`);
 				if(modelResponse) {
 					wsconsole.appendLine(JSON.stringify(modelResponse));
+					const decoration = colorText(selectedStartOffset, selectedEndOffset, 'rgba(0, 0, 0, 0.3)');
 					insertedHistory.push({
 						startPosition: selectedStartOffset,
 						endPosition: selectedEndOffset,
 						prefix: selectedText,
 						echo: true,
 						modelCompletion: modelResponse.choices[0],
+						decoration: decoration
 					});
 				}
 			});

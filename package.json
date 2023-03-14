@@ -16,6 +16,14 @@
   ],
   "main": "./out/extension.js",
   "contributes": {
+    "views": {
+      "explorer": [
+        {
+          "id": "worldtree",
+          "name": "worldtree"
+        }
+      ]
+    },
     "commands": [
       {
         "command": "worldspider.showCompletions",
@@ -48,8 +56,25 @@
       {
         "command": "worldspider.nextCompletions",
         "title": "Show next completions"
+      },
+      {
+        "command": "worldtree.createChild",
+        "title": "Create child",
+        "icon": {
+          "light": "images/light/add.svg",
+          "dark": "images/dark/add.svg"
+        }
       }
     ],
+    "menus": {
+      "view/item/context": [
+        {
+          "command": "worldtree.createChild",
+          "when": "view == worldtree && viewItem == treeItem",
+          "group": "inline"
+        }
+      ]
+    },
     "keybindings": [
       {
         "command": "worldspider.showCompletions",
