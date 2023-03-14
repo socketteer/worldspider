@@ -75,6 +75,7 @@ export function activate(context: vscode.ExtensionContext) {
 					completionItem.insertText = text;
 					completionItem.keepWhitespace = true;
 					completionItem.documentation = text;
+					completionItem.kind = vscode.CompletionItemKind.Text;
 					completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
 					
 					const absolutePosition = document.offsetAt(position);
