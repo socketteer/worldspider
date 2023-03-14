@@ -40,6 +40,26 @@ export function activate(context: vscode.ExtensionContext) {
 			echo: history[currentHistoryIndex].echo,
 			modelCompletion: history[currentHistoryIndex].choices[completionIndex],
 		});
+		const workbenchConfig = vscode.workspace.getConfiguration('worldspider');
+
+		if (!workbenchConfig.get('highlightModelText')) {
+			return;
+		}
+		// create decoration for the inserted text
+		const decoration = vscode.window.createTextEditorDecorationType({
+			backgroundColor: 'rgba(0, 0, 0, 0.1)',
+			borderRadius: '3px',
+			border: '1px solid rgba(0, 0, 0, 0.4)',
+			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
+		});
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		const startPosition = editor.document.positionAt(position);
+		const endPosition = editor.document.positionAt(position + text.length);
+		const range = new vscode.Range(startPosition, endPosition);
+		editor.setDecorations(decoration, [range]);
 	}
 
 	let afterInsertTextDisposable = vscode.commands.registerCommand('worldspider.afterInsertText', afterInsertText);
