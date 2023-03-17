@@ -57,6 +57,8 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
   const log = workbenchConfig.get('log');
   const apiKey = workbenchConfig.get('apiKey');
 
+  const chat = model === 'gpt-3.5-turbo' || model === 'gpt-4';
+
   if(!apiKey) {
     vscode.window.showErrorMessage("No API key set. Please set the 'worldspider.apiKey' setting.");
     return null;
@@ -67,23 +69,41 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
   });
   const openai = new OpenAIApi(configuration);
 
-  try {
-    const response = await openai.createCompletion({
-      model: model,
-      prompt: prompt,
-      suffix: infill ? suffix : null,
-      max_tokens: maxTokens,
-      top_p: topP,
-      frequency_penalty: frequencyPenalty,
-      presence_penalty: presencePenalty,
-      logprobs: logprobs,
-      echo: echo,
-      n: numCompletions,
-      temperature: temperature,
+  const request = {
+    model: model,
+    // prompt: prompt,
+    max_tokens: maxTokens,
+    top_p: topP,
+    frequency_penalty: frequencyPenalty,
+    presence_penalty: presencePenalty,
+    n: numCompletions,
+    temperature: temperature,
+    ...(!chat && {logprobs: logprobs}),
+    ...(!chat && {echo: echo}),
+    ...(!chat && {suffix: infill ? suffix : null}),
+    ...(chat && { messages: [{ role: "assistant", content: prompt }] }),
+    ...(!chat && { prompt }),
+  };
+
+  try {      
+    const response = chat ? await openai.createChatCompletion(request) : await openai.createCompletion(request);
+
+    // if chat, change the format of the response from choices[i].message.content to choices[i].text
+
+    const choices = response.data.choices.map((choice: any) => {
+      if(chat) {
+        return {
+          ...choice,
+          text: " " + choice.message.content, // TODO remove this space and find less hacky way to fix the issue
+        };
+      } else {
+        return choice;
+      }
     });
+    
     const responseObject = {
       ...response.data,
-      choices: echo ? removePromptsFromCompletions(response.data.choices, prompt) : response.data.choices,
+      choices: echo ? removePromptsFromCompletions(choices, prompt) : choices,
       prompt: prompt,
       suffix: infill ? suffix : null,
       echo: echo,
