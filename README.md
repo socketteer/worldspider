@@ -8,7 +8,17 @@ You will need an OpenAI API key.
 
 ## Instructions
 
-Install using the command `code --install-extension worldspider-0.0.2.vsix`.
+### Installing from vsix
+
+Install using the command `code --install-extension worldspider-0.0.N.vsix`.
+
+### Testing from source
+
+1. Clone this repository.
+2. Run `npm install` to install dependencies.
+3. Press `F5` to open a new window with the extension loaded.
+
+### Required settings
 
 After installing, set `worldspider.apiKey` to your OpenAI API key.
 
