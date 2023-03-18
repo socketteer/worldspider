@@ -10,6 +10,7 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
 
 -   Support for chat models like gpt-3.5-turbo and gpt-4
 -   Generated text is highlighted in the editor (can be disabled with `worldspider.highlightModelText` setting)
+-   Added customizable model operations
 
 ## [0.0.4]
 

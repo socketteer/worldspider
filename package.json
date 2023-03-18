@@ -48,6 +48,10 @@
       {
         "command": "worldspider.nextCompletions",
         "title": "Show next completions"
+      },
+      {
+        "command": "worldspider.customOp",
+        "title": "Custom operation"
       }
     ],
     "keybindings": [
@@ -90,6 +94,11 @@
         "command": "worldspider.nextCompletions",
         "key": "alt+right",
         "mac": "alt+right"
+      },
+      {
+        "command": "worldspider.customOp",
+        "key": "alt+shift+o",
+        "mac": "alt+shift+o"
       }
     ],
     "configuration": {
@@ -179,6 +188,16 @@
           "type": "boolean",
           "default": true,
           "description": "Highlight model-generated text"
+        },
+        "worldspider.generation.customInstruction": {
+          "type": "string",
+          "default": "This GPT-4 powered, AGI-complete text mutator rewrites anything the user sends in the style of David Foster Wallace.",
+          "description": "Instruction for the custom operation"
+        },
+        "worldspider.generation.customOpModel": {
+          "type": "string",
+          "default": "gpt-4",
+          "description": "Model for the custom operation"
         }
       }
     }

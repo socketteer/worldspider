@@ -43,7 +43,7 @@ function removePromptsFromCompletions (completions: ModelCompletion[], prompt: s
   });
 }
 
-export async function getModelResponse(prompt: string, suffix: string, infill: boolean, scorePromptOnly: boolean = false): Promise<ModelResponse | null> {
+export async function getModelResponse(prompt: string, suffix: string | null, scorePromptOnly: boolean = false): Promise<ModelResponse | null> {
   const workbenchConfig = vscode.workspace.getConfiguration('worldspider');
   const model = workbenchConfig.get('generation.model');
   const numCompletions = scorePromptOnly ? 1 : workbenchConfig.get('generation.numCompletions');
@@ -80,7 +80,7 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
     temperature: temperature,
     ...(!chat && {logprobs: logprobs}),
     ...(!chat && {echo: echo}),
-    ...(!chat && {suffix: infill ? suffix : null}),
+    ...(!chat && {suffix: suffix}),
     ...(chat && { messages: [{ role: "assistant", content: prompt }] }),
     ...(!chat && { prompt }),
   };
@@ -105,7 +105,7 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
       ...response.data,
       choices: echo ? removePromptsFromCompletions(choices, prompt) : choices,
       prompt: prompt,
-      suffix: infill ? suffix : null,
+      suffix: suffix,
       echo: echo,
     };
     if(log) {
@@ -113,6 +113,62 @@ export async function getModelResponse(prompt: string, suffix: string, infill: b
     }
     return responseObject;
   } catch (error) {
+    console.log(error);
+    vscode.window.showErrorMessage("model call failed");
+    return null;
+  }
+}
+
+
+export async function modelOperation(prefix:string, suffix: string, selectedText: string ) {
+  const workbenchConfig = vscode.workspace.getConfiguration('worldspider');
+
+  const apiKey = workbenchConfig.get('apiKey');
+  const instruction = workbenchConfig.get('generation.customInstruction');
+  const model = workbenchConfig.get('generation.customOpModel');
+
+  const messages = [
+    { role: "system", content: instruction },
+    { role: "user", content: selectedText }
+  ];
+
+  const request = {
+    model: model,
+    max_tokens: 200,
+    n: 3,
+    temperature: 1.2,
+    messages: messages,
+  };
+
+  const configuration = new Configuration({
+    apiKey: apiKey,
+  });
+  const openai = new OpenAIApi(configuration);
+
+  // console.log(request);
+
+  try {
+    const response = await openai.createChatCompletion(request);
+
+    const choices = response.data.choices.map((choice: any) => {
+      return {
+        ...choice,
+        text: choice.message.content,
+      };
+    });
+
+    console.log(choices);
+
+    const responseObject = {
+      ...response.data,
+      choices: choices,
+      prefix: prefix,
+      suffix: suffix,
+    };
+
+    return responseObject;
+  }
+  catch (error) {
     console.log(error);
     vscode.window.showErrorMessage("model call failed");
     return null;

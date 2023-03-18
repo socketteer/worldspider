@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { getModelResponse, ModelResponse, ModelCompletion, LogprobsObject } from './callModel';
+import { getModelResponse, ModelResponse, ModelCompletion, modelOperation } from './callModel';
 import { getCurrentContext, getSelectionInfo } from './document';
 // import { probToColor } from './utils';
 
@@ -68,7 +68,7 @@ export function activate(context: vscode.ExtensionContext) {
 		'*', 
 		{
 			provideCompletionItems(document, position, token, context) {
-				// console.log(history[currentHistoryIndex]);
+				console.log(history[currentHistoryIndex]);
 				const completionItems = history[currentHistoryIndex].choices.map((response: { text: string; }, i: any) => {
 					const text = response.text;
 					const completionItem = new vscode.CompletionItem(text);
@@ -189,15 +189,15 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('editor.action.triggerSuggest');
 	});
 
-	async function handleGetModelCompletions(infill: boolean = false) {
-		const { prefix, suffix } = getCurrentContext();
+
+	async function handleGetModelCompletions(callModelFunction: Function) {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
 			title: 'Generating...'
 		}, async (progress) => {
 			progress.report({ increment: 0 });
-			const modelResponse = await getModelResponse(prefix, suffix, infill);
+			const modelResponse = await callModelFunction();
 			progress.report({ increment: 100 });
 			// append to history
 			if (modelResponse) {
@@ -210,11 +210,23 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	let getContinuations = vscode.commands.registerCommand('worldspider.getContinuations', () => {
-		handleGetModelCompletions(false);
+		const { prefix, suffix } = getCurrentContext();
+		handleGetModelCompletions(() => getModelResponse(prefix, null));
 	});
 
 	let getInfills = vscode.commands.registerCommand('worldspider.getInfills', () => {
-		handleGetModelCompletions(true);
+		const { prefix, suffix } = getCurrentContext();
+		handleGetModelCompletions(() => getModelResponse(prefix, suffix));
+	});
+
+	let customOp = vscode.commands.registerCommand('worldspider.customOp', () => {
+		const { prefix, suffix } = getCurrentContext();
+		const { selectedText } = getSelectionInfo();
+		if(!selectedText) {
+			vscode.window.showInformationMessage(`No text selected`);
+			return;
+		}
+		handleGetModelCompletions(() => modelOperation(prefix, suffix, selectedText));
 	});
 
 	let scorePrompt = vscode.commands.registerCommand('worldspider.scorePrompt', () => {
@@ -226,7 +238,7 @@ export function activate(context: vscode.ExtensionContext) {
 				title: 'Getting prompt logprobs...'
 			}, async (progress) => {
 				progress.report({ increment: 0 });
-				const modelResponse = await getModelResponse(selectedText, '', false, true);
+				const modelResponse = await getModelResponse(selectedText, '', true);
 				progress.report({ increment: 100 });
 				vscode.window.showInformationMessage(`Added prompt logprob information`);
 				if(modelResponse) {
@@ -276,6 +288,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(showCompletions);
 	context.subscriptions.push(getContinuations);
 	context.subscriptions.push(getInfills);
+	context.subscriptions.push(customOp);
 	context.subscriptions.push(copyCompletions);
 	context.subscriptions.push(copyCompletionsText);
 	context.subscriptions.push(prevCompletions);
