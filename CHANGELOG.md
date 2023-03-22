@@ -4,7 +4,15 @@ All notable changes to the "worldspider" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
-## [Unreleased]
+## [0.0.5] - 2023-03-17
+
+### Added
+
+-   Support for chat models like gpt-3.5-turbo and gpt-4
+-   Generated text is highlighted in the editor (can be disabled with `worldspider.highlightModelText` setting)
+-   Added customizable model operations
+
+## [0.0.4]
 
 ### Added
 

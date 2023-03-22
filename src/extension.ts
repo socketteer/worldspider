@@ -2,7 +2,7 @@
 // Import the module and reference it with the alias vscode in your code below
 import * as vscode from 'vscode';
 
-import { getModelResponse, ModelResponse, ModelCompletion, LogprobsObject } from './callModel';
+import { getModelResponse, ModelResponse, ModelCompletion, modelOperation } from './callModel';
 import { getCurrentContext, getSelectionInfo } from './document';
 // import { probToColor } from './utils';
 
@@ -60,6 +60,26 @@ export function activate(context: vscode.ExtensionContext) {
 			echo: history[currentHistoryIndex].echo,
 			modelCompletion: history[currentHistoryIndex].choices[completionIndex],
 		});
+		const workbenchConfig = vscode.workspace.getConfiguration('worldspider');
+
+		if (!workbenchConfig.get('highlightModelText')) {
+			return;
+		}
+		// create decoration for the inserted text
+		const decoration = vscode.window.createTextEditorDecorationType({
+			backgroundColor: 'rgba(0, 0, 0, 0.1)',
+			borderRadius: '3px',
+			border: '1px solid rgba(0, 0, 0, 0.4)',
+			rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
+		});
+		const editor = vscode.window.activeTextEditor;
+		if (!editor) {
+			return;
+		}
+		const startPosition = editor.document.positionAt(position);
+		const endPosition = editor.document.positionAt(position + text.length);
+		const range = new vscode.Range(startPosition, endPosition);
+		editor.setDecorations(decoration, [range]);
 	}
 
 	let afterInsertTextDisposable = vscode.commands.registerCommand('worldspider.afterInsertText', afterInsertText);
@@ -68,13 +88,14 @@ export function activate(context: vscode.ExtensionContext) {
 		'*', 
 		{
 			provideCompletionItems(document, position, token, context) {
-				// console.log(history[currentHistoryIndex]);
+				console.log(history[currentHistoryIndex]);
 				const completionItems = history[currentHistoryIndex].choices.map((response: { text: string; }, i: any) => {
 					const text = response.text;
 					const completionItem = new vscode.CompletionItem(text);
 					completionItem.insertText = text;
 					completionItem.keepWhitespace = true;
 					completionItem.documentation = text;
+					completionItem.kind = vscode.CompletionItemKind.Text;
 					completionItem.range = new vscode.Range(position, position); // to prevent trying to overwrite the previous word
 					
 					const absolutePosition = document.offsetAt(position);
@@ -188,19 +209,15 @@ export function activate(context: vscode.ExtensionContext) {
 			vscode.commands.executeCommand('editor.action.triggerSuggest');
 	});
 
-	async function handleGetModelCompletions(infill: boolean = false) {
-		let { prefix, suffix } = getCurrentContext();
-		// Strip comments and other special tokens from prompt
-		prefix = removeMetaTokensFromPrompt(prefix);
-		suffix = removeMetaTokensFromPrompt(suffix); 
 
+	async function handleGetModelCompletions(callModelFunction: Function) {
 		vscode.window.withProgress({
 			location: vscode.ProgressLocation.Window,
 			cancellable: false,
 			title: 'Generating...'
 		}, async (progress) => {
 			progress.report({ increment: 0 });
-			const modelResponse = await getModelResponse(prefix, suffix, infill);
+			const modelResponse = await callModelFunction();
 			progress.report({ increment: 100 });
 			// append to history
 			if (modelResponse) {
@@ -213,11 +230,29 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	let getContinuations = vscode.commands.registerCommand('worldspider.getContinuations', () => {
-		handleGetModelCompletions(false);
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
+		handleGetModelCompletions(() => getModelResponse(prefix, null));
 	});
 
 	let getInfills = vscode.commands.registerCommand('worldspider.getInfills', () => {
-		handleGetModelCompletions(true);
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
+		handleGetModelCompletions(() => getModelResponse(prefix, suffix));
+	});
+
+	let customOp = vscode.commands.registerCommand('worldspider.customOp', () => {
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
+		const { selectedText } = getSelectionInfo();
+		if(!selectedText) {
+			vscode.window.showInformationMessage(`No text selected`);
+			return;
+		}
+		handleGetModelCompletions(() => modelOperation(prefix, suffix, selectedText));
 	});
 
 	let scorePrompt = vscode.commands.registerCommand('worldspider.scorePrompt', () => {
@@ -229,7 +264,7 @@ export function activate(context: vscode.ExtensionContext) {
 				title: 'Getting prompt logprobs...'
 			}, async (progress) => {
 				progress.report({ increment: 0 });
-				const modelResponse = await getModelResponse(selectedText, '', false, true);
+				const modelResponse = await getModelResponse(selectedText, '', true);
 				progress.report({ increment: 100 });
 				vscode.window.showInformationMessage(`Added prompt logprob information`);
 				if(modelResponse) {
@@ -279,6 +314,7 @@ export function activate(context: vscode.ExtensionContext) {
 	context.subscriptions.push(showCompletions);
 	context.subscriptions.push(getContinuations);
 	context.subscriptions.push(getInfills);
+	context.subscriptions.push(customOp);
 	context.subscriptions.push(copyCompletions);
 	context.subscriptions.push(copyCompletionsText);
 	context.subscriptions.push(prevCompletions);
