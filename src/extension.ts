@@ -15,6 +15,26 @@ interface InsertedHistoryItem {
 }
 
 
+export function removeMetaTokensFromPrompt(prompt: string): string {
+	// Strip comments, i.e. the tokens and everything between them
+	// Also strip a trailing newline after the comment,
+	// so a commented line doesn't leave an extra newline in the prompt 
+	prompt = prompt.replace(/<\|BEGINCOMMENT\|>.*?<\|ENDCOMMENT\|>\n?/g, "");
+	
+	// Strip everything before the <|start|> token.
+	// If there is a newline directly after the start token, also strip it
+	prompt = prompt.replace(/^.*<\|start\|>\n?/, "");
+
+	// Strip everything after the <|end|> token
+	prompt = prompt.replace(/<\|end\|>.*$/, "");
+
+	// Strip any other kind of token
+	prompt = prompt.replace(/<\|.*?\|>/g, "");
+
+	return prompt;
+  }
+
+
 // This method is called when your extension is activated
 // Your extension is activated the very first time the command is executed
 export function activate(context: vscode.ExtensionContext) {
@@ -210,17 +230,23 @@ export function activate(context: vscode.ExtensionContext) {
 	}
 
 	let getContinuations = vscode.commands.registerCommand('worldspider.getContinuations', () => {
-		const { prefix, suffix } = getCurrentContext();
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
 		handleGetModelCompletions(() => getModelResponse(prefix, null));
 	});
 
 	let getInfills = vscode.commands.registerCommand('worldspider.getInfills', () => {
-		const { prefix, suffix } = getCurrentContext();
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
 		handleGetModelCompletions(() => getModelResponse(prefix, suffix));
 	});
 
 	let customOp = vscode.commands.registerCommand('worldspider.customOp', () => {
-		const { prefix, suffix } = getCurrentContext();
+		let { prefix, suffix } = getCurrentContext();
+    prefix = removeMetaTokensFromPrompt(prefix);
+		suffix = removeMetaTokensFromPrompt(suffix); 
 		const { selectedText } = getSelectionInfo();
 		if(!selectedText) {
 			vscode.window.showInformationMessage(`No text selected`);
