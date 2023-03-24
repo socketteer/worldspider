@@ -3,7 +3,7 @@
   "displayName": "worldspider",
   "description": "loom in vscode",
   "icon": "images/worldspider.png",
-  "version": "0.0.5",
+  "version": "0.0.6",
   "engines": {
     "vscode": "^1.74.0"
   },
@@ -108,6 +108,11 @@
           "type": "string",
           "default": "",
           "description": "OpenAI API key"
+        },
+        "worldspider.basePath": {
+          "type": "string",
+          "default": "https://api.openai.com/v1",
+          "description": "API base path"
         },
         "worldspider.generation.model": {
           "type": "string",

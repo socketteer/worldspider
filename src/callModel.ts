@@ -56,6 +56,7 @@ export async function getModelResponse(prompt: string, suffix: string | null, sc
   const echo = scorePromptOnly ? true : workbenchConfig.get('generation.echo');
   const log = workbenchConfig.get('log');
   const apiKey = workbenchConfig.get('apiKey');
+  const basePath = workbenchConfig.get('basePath');
 
   const chat = model === 'gpt-3.5-turbo' || model === 'gpt-4';
 
@@ -66,6 +67,7 @@ export async function getModelResponse(prompt: string, suffix: string | null, sc
 
   const configuration = new Configuration({
     apiKey: apiKey,
+    basePath: basePath,
   });
   const openai = new OpenAIApi(configuration);
 

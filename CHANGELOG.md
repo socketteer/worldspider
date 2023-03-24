@@ -4,6 +4,13 @@ All notable changes to the "worldspider" extension will be documented in this fi
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.0.6] - 2023-03-23
+
+### Added 
+
+-  Comments
+-  Alternate base paths for openAI API
+
 ## [0.0.5] - 2023-03-17
 
 ### Added

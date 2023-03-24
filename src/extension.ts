@@ -32,7 +32,7 @@ export function removeMetaTokensFromPrompt(prompt: string): string {
 	prompt = prompt.replace(/<\|.*?\|>/g, "");
 
 	return prompt;
-  }
+}
 
 
 // This method is called when your extension is activated
